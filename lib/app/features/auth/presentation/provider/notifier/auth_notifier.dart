@@ -14,28 +14,21 @@ class AuthNotifier extends BaseNotifier<AuthState> {
 
   @override
   AuthState build() {
-    // Call async method without awaiting - it will check ref.mounted internally
+    // Call async method without awaiting - Riverpod handles lifecycle automatically
     _checkAuthStatus();
     return const AuthState();
   }
 
   Future<void> _checkAuthStatus() async {
     final token = await StorageService.getToken();
-    // Check if provider is still mounted before updating state
-    if (!ref.mounted) return;
-
     final isLoggedIn = token != null && token.isNotEmpty;
     state = state.copyWith(isAuthenticated: isLoggedIn, token: token);
   }
 
   Future<void> login(String token) async {
-    if (!ref.mounted) return;
     setLoading(true);
     try {
       await StorageService.saveToken(token);
-      // Check if provider is still mounted after async operation
-      if (!ref.mounted) return;
-
       state = state.copyWith(
         isAuthenticated: true,
         token: token,
@@ -43,31 +36,24 @@ class AuthNotifier extends BaseNotifier<AuthState> {
         isSuccess: true,
       );
     } catch (e) {
-      if (!ref.mounted) return;
       setError(e.toString());
     }
   }
 
   Future<void> handleLogin(BuildContext context) async {
-    if (!ref.mounted) return;
-
     // Simulate login with a dummy token since we don't have a real backend yet
     // This updates the state to authenticated, allowing the AuthGuard to pass
     await login("dummy_auth_token");
 
-    if (state.isAuthenticated && ref.mounted) {
+    if (state.isAuthenticated && context.mounted) {
       AppRoutes.goToDashboard(context);
     }
   }
 
   Future<void> logout() async {
-    if (!ref.mounted) return;
     setLoading(true);
     try {
       await StorageService.clearAuth();
-      // Check if provider is still mounted after async operation
-      if (!ref.mounted) return;
-
       state = state.copyWith(
         isAuthenticated: false,
         token: null,
@@ -75,7 +61,6 @@ class AuthNotifier extends BaseNotifier<AuthState> {
         isSuccess: true,
       );
     } catch (e) {
-      if (!ref.mounted) return;
       setError(e.toString());
     }
   }
@@ -86,7 +71,6 @@ class AuthNotifier extends BaseNotifier<AuthState> {
 
   @override
   void reset() {
-    if (!ref.mounted) return;
     state = const AuthState();
   }
 }
