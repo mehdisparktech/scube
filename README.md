@@ -10,7 +10,7 @@
 
 ## 📖 Overview
 
-**Scube** is a modern Flutter application designed for real-time solar energy control and monitoring. The system provides comprehensive monitoring capabilities for solar plants, including power generation tracking, performance ratio analysis, energy statistics, and weather integration.
+**Scube** is a modern Flutter-based solar energy control and monitoring system that enables real-time tracking of power generation, performance metrics, and energy statistics for solar plants. Built with Clean Architecture principles and powered by Riverpod, it provides intuitive dashboards with interactive charts, weather integration, and comprehensive analytics for efficient solar plant management.
 
 ### Key Highlights
 
